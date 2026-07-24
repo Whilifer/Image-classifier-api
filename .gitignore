@@ -1,0 +1,14 @@
+.icvenv/
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.vscode/
+.idea/
+*.log
+*.tmp
+dist/
+build/
+*.egg-info/
