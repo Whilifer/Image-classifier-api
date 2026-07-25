@@ -3,6 +3,7 @@ from app.dependencies import get_classifier
 from app.services.classifier import Classifier
 from io import BytesIO
 from PIL import Image
+from app.models.response import PredictionResponse
 
 router = APIRouter(
     prefix="/predict",
@@ -20,7 +21,7 @@ def health(
         "model_name": classifier.model.__class__.__name__
     }
 
-@router.post("/")
+@router.post("/", response_model=PredictionResponse)
 async def classify(
     file: UploadFile = File(...),
     classifier: Classifier = Depends(get_classifier)
