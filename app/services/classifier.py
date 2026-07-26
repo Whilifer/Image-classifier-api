@@ -8,6 +8,7 @@ from torchvision.models import (
 )
 
 from app.models.response import Prediction, PredictionResponse
+from app.config import settings
 
 class Classifier:
 
@@ -26,6 +27,10 @@ class Classifier:
         )
 
         self.model.eval()
+
+        self.device = settings.DEVICE
+
+        self.model.to(self.device)
 
         self.transform = weights.transforms()
 
@@ -80,6 +85,7 @@ class Classifier:
     ):
         tensor = self.transform(image)
         tensor = tensor.unsqueeze(0)
+        tensor = tensor.to(self.device)
         return tensor
 
     def inference(
@@ -103,7 +109,7 @@ class Classifier:
 
         values, indices = torch.topk(
             probabilities,
-            k=3
+            k=settings.TOP_K
         )
 
         predictions = []

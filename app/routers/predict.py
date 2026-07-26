@@ -4,6 +4,7 @@ from app.services.classifier import Classifier
 from io import BytesIO
 from PIL import Image
 from app.models.response import PredictionResponse
+from app.config import settings
 
 router = APIRouter(
     prefix="/predict",
@@ -18,7 +19,8 @@ def health(
     return {
         "status": "ok",
         "model_loaded": classifier.model is not None,
-        "model_name": classifier.model.__class__.__name__
+        "device": settings.DEVICE,
+        "model": settings.MODEL_NAME
     }
 
 @router.post("/", response_model=PredictionResponse)
