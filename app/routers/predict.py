@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image
 from app.models.response import PredictionResponse
 from app.config import settings
+from app.logger import logger
 
 router = APIRouter(
     prefix="/predict",
@@ -31,6 +32,12 @@ async def classify(
     image = Image.open(
         BytesIO(await file.read())
     ).convert("RGB")
+
+    logger.info(
+        "Image received: %dx%d",
+        image.width,
+        image.height
+    )
 
     result = classifier.predict(image)
     return result

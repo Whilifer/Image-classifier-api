@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.services.classifier import Classifier
+from app.logger import logger
+from app.config import settings
 
 classifier = Classifier()
 
@@ -9,12 +11,12 @@ classifier = Classifier()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    print("Loading resnet18 model...")
+    logger.info(f"Loading {settings.MODEL_NAME} model...")
 
     classifier.load()
 
-    print("Model resnet18 loaded")
+    logger.info(f"Model {settings.MODEL_NAME} loaded")
 
     yield
 
-    print("Shutdown")
+    logger.info("Shutdown")

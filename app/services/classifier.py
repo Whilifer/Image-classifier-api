@@ -9,6 +9,8 @@ from torchvision.models import (
 
 from app.models.response import Prediction, PredictionResponse
 from app.config import settings
+from app.logger import logger
+import time
 
 class Classifier:
 
@@ -31,6 +33,12 @@ class Classifier:
         self.device = settings.DEVICE
 
         self.model.to(self.device)
+
+        logger.info(
+            "Model %s loaded on %s",
+            settings.MODEL_NAME,
+            self.device
+        )
 
         self.transform = weights.transforms()
 
@@ -72,12 +80,22 @@ class Classifier:
         self,
         image: Image.Image
     ):
+        start = time.perf_counter()
 
         tensor = self.preprocess(image)
 
         output = self.inference(tensor)
 
-        return self.postprocess(output)
+        result = self.postprocess(output)
+
+        elapsed = (time.perf_counter() - start) * 1000
+
+        logger.info(
+            "Prediction finished in %.2f ms",
+            elapsed
+        )
+
+        return result
 
     def preprocess(
             self,
