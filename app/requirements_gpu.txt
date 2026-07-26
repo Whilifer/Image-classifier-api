@@ -1,0 +1,21 @@
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+fastapi>=0.116
+uvicorn[standard]>=0.35
+
+torch
+torchvision
+torchaudio
+
+pillow>=11.0
+pydantic>=2.0
+python-multipart>=0.0.20
+
+numpy
+python-dotenv
+loguru
+
+pytest
+httpx
+
+mlflow
