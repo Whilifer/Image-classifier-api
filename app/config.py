@@ -13,5 +13,7 @@ class Settings:
 
     MODEL_NAME = "ResNet18"
 
+    MAX_UPLOAD_SIZE = 10 * 1024 * 1024
+
 
 settings = Settings()
