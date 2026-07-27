@@ -4,6 +4,7 @@ torch
 torchvision
 pillow
 pydantic
+pydantic-settings>=2.0
 python-multipart
 
 fastapi>=0.116
