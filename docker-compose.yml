@@ -1,0 +1,19 @@
+services:
+
+  api:
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: image-classifier
+
+    container_name: image-classifier-api
+
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - .env
+
+    restart: unless-stopped
