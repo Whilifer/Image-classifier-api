@@ -4,40 +4,56 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
+import pytest
 
-def test_predict():
+@pytest.mark.parametrize(
+    "asset_file",
+    [("dog.jpg", "image/jpeg")],
+    indirect=True
+)
+def test_predict(client, asset_file):
 
-    with TestClient(app) as client:
+    response = client.post("/predict/", files={"file": asset_file})
 
-        image_path = Path("tests/assets/dog.jpg")
+    assert response.status_code == 200
 
-        with image_path.open("rb") as image:
+    body = response.json()
 
-            response = client.post(
-                "/predict/",
-                files={
-                    "file": (
-                        image_path.name,
-                        image,
-                        "image/jpeg"
-                    )
-                }
-            )
+    assert "predictions" in body
+    assert isinstance(body["predictions"], list)
+    assert len(body["predictions"]) > 0
 
-        assert response.status_code == 200
+    prediction = body["predictions"][0]
 
-        body = response.json()
+    assert "class_name" in prediction
+    assert "confidence" in prediction
 
-        assert "predictions" in body
-        assert isinstance(body["predictions"], list)
-        assert len(body["predictions"]) > 0
+    assert isinstance(prediction["class_name"], str)
+    assert isinstance(prediction["confidence"], float)
 
-        prediction = body["predictions"][0]
+    assert 0 <= prediction["confidence"] <= 1
 
-        assert "class_name" in prediction
-        assert "confidence" in prediction
 
-        assert isinstance(prediction["class_name"], str)
-        assert isinstance(prediction["confidence"], float)
+def test_predict_without_file(client):
 
-        assert 0 <= prediction["confidence"] <= 1
+    response = client.post("/predict")
+
+    assert response.status_code == 422
+
+@pytest.mark.parametrize(
+    "asset_file",
+    [("test.txt", "text/plain")],
+    indirect=True
+)
+def test_predict_text_file(client, asset_file):
+    response = client.post("/predict/", files={"file": asset_file})
+    assert response.status_code == 400
+
+@pytest.mark.parametrize(
+    "asset_file",
+    [("broken.jpg", "image/jpeg")],
+    indirect=True
+)
+def test_predict_broken_image(client, asset_file):
+    response = client.post("/predict/", files={"file": asset_file})
+    assert response.status_code == 400

@@ -2,15 +2,14 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 
-def test_health():
-    with TestClient(app) as client:
+def test_health(client):
 
-        response = client.get("/predict/health")
+    response = client.get("/predict/health")
 
-        assert response.status_code == 200
+    assert response.status_code == 200
 
-        body = response.json()
+    body = response.json()
 
-        assert body["status"] == "ok"
+    assert body["status"] == "ok"
 
-        assert body["model_loaded"] is True
+    assert body["model_loaded"] is True
