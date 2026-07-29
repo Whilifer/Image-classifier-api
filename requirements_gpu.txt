@@ -16,7 +16,7 @@ numpy
 python-dotenv
 loguru
 
-pytest
-httpx
+pytest>=8.0
+httpx>=0.28
 
 mlflow

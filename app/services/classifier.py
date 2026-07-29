@@ -17,9 +17,14 @@ class Classifier:
 
     def __init__(self):
 
+        # self.mlflow = None #не используется
+        
         self.model = None
         self.transform = None
         self.categories = None
+
+    # def set_mlflow(self, mlflow): #не используется
+    #     self.mlflow = mlflow
 
     def load(self):
 
@@ -90,6 +95,15 @@ class Classifier:
         result = self.postprocess(output)
 
         elapsed = (time.perf_counter() - start) * 1000
+
+        #не используется
+        # self.mlflow.log_prediction( 
+        #     model_name="ResNet18",
+        #     device=self.device,
+        #     confidence=confidence,
+        #     inference_time_ms=elapsed,
+        #     predicted_class=predicted_class
+        # )
 
         logger.info(
             "Prediction finished in %.2f ms",

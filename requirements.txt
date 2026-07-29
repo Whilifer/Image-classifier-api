@@ -16,3 +16,8 @@ torchvision
 pillow>=11.0
 pydantic>=2.0
 python-multipart>=0.0.20
+
+mlflow>=3.0
+
+pytest>=8.0
+httpx>=0.28
