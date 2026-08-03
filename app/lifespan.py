@@ -7,7 +7,8 @@ from app.config import settings
 # from app.services.mlflow_service import MLflowService
 
 classifier = Classifier()
-#mlflow = MLflowService() #не используется
+# mlflow = MLflowService() #не используется
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -16,7 +17,7 @@ async def lifespan(app: FastAPI):
 
     classifier.load()
 
-    #classifier.set_mlflow(mlflow) #не используется
+    # classifier.set_mlflow(mlflow) #не используется
 
     logger.info(f"Model {settings.MODEL_NAME} loaded")
 

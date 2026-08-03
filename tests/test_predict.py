@@ -6,11 +6,8 @@ from app.main import app
 
 import pytest
 
-@pytest.mark.parametrize(
-    "asset_file",
-    [("dog.jpg", "image/jpeg")],
-    indirect=True
-)
+
+@pytest.mark.parametrize("asset_file", [("dog.jpg", "image/jpeg")], indirect=True)
 def test_predict(client, asset_file):
 
     response = client.post("/predict/", files={"file": asset_file})
@@ -40,20 +37,14 @@ def test_predict_without_file(client):
 
     assert response.status_code == 422
 
-@pytest.mark.parametrize(
-    "asset_file",
-    [("test.txt", "text/plain")],
-    indirect=True
-)
+
+@pytest.mark.parametrize("asset_file", [("test.txt", "text/plain")], indirect=True)
 def test_predict_text_file(client, asset_file):
     response = client.post("/predict/", files={"file": asset_file})
     assert response.status_code == 400
 
-@pytest.mark.parametrize(
-    "asset_file",
-    [("broken.jpg", "image/jpeg")],
-    indirect=True
-)
+
+@pytest.mark.parametrize("asset_file", [("broken.jpg", "image/jpeg")], indirect=True)
 def test_predict_broken_image(client, asset_file):
     response = client.post("/predict/", files={"file": asset_file})
     assert response.status_code == 400

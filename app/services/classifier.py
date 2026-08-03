@@ -2,10 +2,7 @@ from PIL import Image
 
 import torch
 
-from torchvision.models import (
-    resnet18,
-    ResNet18_Weights
-)
+from torchvision.models import resnet18, ResNet18_Weights
 
 from app.models.response import Prediction, PredictionResponse
 from app.config import settings
@@ -14,11 +11,10 @@ import time
 
 
 class Classifier:
-
     def __init__(self):
 
         # self.mlflow = None #не используется
-        
+
         self.model = None
         self.transform = None
         self.categories = None
@@ -30,9 +26,7 @@ class Classifier:
 
         weights = ResNet18_Weights.DEFAULT
 
-        self.model = resnet18(
-            weights=weights
-        )
+        self.model = resnet18(weights=weights)
 
         self.model.eval()
 
@@ -40,11 +34,7 @@ class Classifier:
 
         self.model.to(self.device)
 
-        logger.info(
-            "Model %s loaded on %s",
-            settings.MODEL_NAME,
-            self.device
-        )
+        logger.info("Model %s loaded on %s", settings.MODEL_NAME, self.device)
 
         self.transform = weights.transforms()
 
@@ -82,10 +72,7 @@ class Classifier:
     #         "confidence": confidence
     #     }
 
-    def predict(
-        self,
-        image: Image.Image
-    ):
+    def predict(self, image: Image.Image):
         start = time.perf_counter()
 
         tensor = self.preprocess(image)
@@ -96,8 +83,8 @@ class Classifier:
 
         elapsed = (time.perf_counter() - start) * 1000
 
-        #не используется
-        # self.mlflow.log_prediction( 
+        # не используется
+        # self.mlflow.log_prediction(
         #     model_name="ResNet18",
         #     device=self.device,
         #     confidence=confidence,
@@ -105,63 +92,36 @@ class Classifier:
         #     predicted_class=predicted_class
         # )
 
-        logger.info(
-            "Prediction finished in %.2f ms",
-            elapsed
-        )
+        logger.info("Prediction finished in %.2f ms", elapsed)
 
         return result
 
-    def preprocess(
-            self,
-            image: Image.Image
-    ):
+    def preprocess(self, image: Image.Image):
         tensor = self.transform(image)
         tensor = tensor.unsqueeze(0)
         tensor = tensor.to(self.device)
         return tensor
 
-    def inference(
-            self,
-            tensor: torch.Tensor
-    ):
+    def inference(self, tensor: torch.Tensor):
         with torch.inference_mode():
             output = self.model(tensor)
 
         return output
 
-    def postprocess(
-        self,
-        output: torch.Tensor
-    ):
+    def postprocess(self, output: torch.Tensor):
 
-        probabilities = torch.softmax(
-            output,
-            dim=1
-        )
+        probabilities = torch.softmax(output, dim=1)
 
-        values, indices = torch.topk(
-            probabilities,
-            k=settings.TOP_K
-        )
+        values, indices = torch.topk(probabilities, k=settings.TOP_K)
 
         predictions = []
 
-        for confidence, index in zip(
-            values[0],
-            indices[0]
-        ):
-
+        for confidence, index in zip(values[0], indices[0]):
             predictions.append(
                 Prediction(
                     class_name=self.categories[index.item()],
-                    confidence=round(
-                        confidence.item(),
-                        4
-                    )
+                    confidence=round(confidence.item(), 4),
                 )
             )
 
-        return PredictionResponse(
-            predictions=predictions
-    )
+        return PredictionResponse(predictions=predictions)
