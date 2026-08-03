@@ -115,7 +115,7 @@ class Classifier:
 
         predictions = []
 
-        for confidence, index in zip(values[0], indices[0]):
+        for confidence, index in zip(values[0], indices[0], strict=False):
             predictions.append(
                 Prediction(
                     class_name=self.categories[index.item()],

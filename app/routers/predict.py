@@ -40,7 +40,7 @@ async def classify(
         ).convert("RGB")
     except UnidentifiedImageError:
         logger.exception("Cannot read image")
-        raise HTTPException(status_code=400, detail="Invalid image")
+        raise HTTPException(status_code=400, detail="Invalid image") from None
 
     # content = await file.read()
     if not content:
