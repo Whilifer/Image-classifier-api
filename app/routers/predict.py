@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Depends, UploadFile, File
-from app.dependencies import get_classifier
-from app.services.classifier import Classifier
 from io import BytesIO
-from PIL import Image
-from app.models.response import PredictionResponse
+
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from PIL import Image, UnidentifiedImageError
+
 from app.config import settings
+from app.dependencies import get_classifier
 from app.logger import logger
-from fastapi import HTTPException
+from app.models.response import PredictionResponse
+from app.services.classifier import Classifier
 
 router = APIRouter(prefix="/predict", tags=["Prediction"])
 
@@ -37,7 +38,7 @@ async def classify(
             # BytesIO(await file.read())
             BytesIO(content)
         ).convert("RGB")
-    except Exception:
+    except UnidentifiedImageError:
         logger.exception("Cannot read image")
         raise HTTPException(status_code=400, detail="Invalid image")
 

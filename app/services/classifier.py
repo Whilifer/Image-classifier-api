@@ -1,13 +1,12 @@
-from PIL import Image
+import time
 
 import torch
+from PIL import Image
+from torchvision.models import ResNet18_Weights, resnet18
 
-from torchvision.models import resnet18, ResNet18_Weights
-
-from app.models.response import Prediction, PredictionResponse
 from app.config import settings
 from app.logger import logger
-import time
+from app.models.response import Prediction, PredictionResponse
 
 
 class Classifier:

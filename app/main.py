@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+
+from app.exceptions import global_exception_handler
 from app.lifespan import lifespan
 from app.routers.predict import router as predict_router
-from app.exceptions import global_exception_handler
+
 # from app.services.mlflow_service import MLflowService
 
 app = FastAPI(title="IMG-Classificator", version="1.0.0", lifespan=lifespan)

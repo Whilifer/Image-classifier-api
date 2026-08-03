@@ -1,10 +1,9 @@
+from pathlib import Path
+
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-
-import pytest
-
-from pathlib import Path
 
 
 @pytest.fixture

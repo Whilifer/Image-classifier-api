@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-from app.services.classifier import Classifier
-from app.logger import logger
 from app.config import settings
+from app.logger import logger
+from app.services.classifier import Classifier
+
 # from app.services.mlflow_service import MLflowService
 
 classifier = Classifier()
