@@ -3,7 +3,6 @@ import pytest
 
 @pytest.mark.parametrize("asset_file", [("dog.jpg", "image/jpeg")], indirect=True)
 def test_predict(client, asset_file):
-
     response = client.post("/predict/", files={"file": asset_file})
 
     assert response.status_code == 200
@@ -26,7 +25,6 @@ def test_predict(client, asset_file):
 
 
 def test_predict_without_file(client):
-
     response = client.post("/predict")
 
     assert response.status_code == 422

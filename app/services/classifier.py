@@ -11,7 +11,6 @@ from app.models.response import Prediction, PredictionResponse
 
 class Classifier:
     def __init__(self):
-
         # self.mlflow = None #не используется
 
         self.model = None
@@ -22,7 +21,6 @@ class Classifier:
     #     self.mlflow = mlflow
 
     def load(self):
-
         weights = ResNet18_Weights.DEFAULT
 
         self.model = resnet18(weights=weights)
@@ -108,7 +106,6 @@ class Classifier:
         return output
 
     def postprocess(self, output: torch.Tensor):
-
         probabilities = torch.softmax(output, dim=1)
 
         values, indices = torch.topk(probabilities, k=settings.TOP_K)

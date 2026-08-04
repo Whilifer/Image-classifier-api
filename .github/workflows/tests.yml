@@ -47,7 +47,10 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest -v
+          pytest \
+            --cov=app \
+            --cov-report=term \
+            --cov-fail-under=80
 
   docker:
     name: Build Docker image

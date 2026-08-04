@@ -3,7 +3,6 @@ import mlflow
 
 class MLflowService:
     def __init__(self):
-
         mlflow.set_tracking_uri("file:./mlruns")
         mlflow.set_experiment("Image Classification API")
 
@@ -15,7 +14,6 @@ class MLflowService:
         inference_time_ms: float,
         predicted_class: str,
     ):
-
         with mlflow.start_run():
             mlflow.log_param("model_name", model_name)
 

@@ -21,3 +21,7 @@ mlflow>=3.0
 
 pytest>=8.0
 httpx>=0.28
+
+pytest-cov
+coverage
+pre-commit

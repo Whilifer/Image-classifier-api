@@ -8,7 +8,6 @@ from app.main import app
 
 @pytest.fixture
 def client():
-
     with TestClient(app) as client:
         yield client
 
@@ -23,7 +22,6 @@ def getfile():
 
 @pytest.fixture
 def asset_file(request, getfile):
-
     filename, mime = request.param
     path = getfile(filename)
 

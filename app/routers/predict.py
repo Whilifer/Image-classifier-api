@@ -14,7 +14,6 @@ router = APIRouter(prefix="/predict", tags=["Prediction"])
 
 @router.get("/health")
 def health(classifier: Classifier = Depends(get_classifier)):
-
     return {
         "status": "ok",
         "model_loaded": classifier.model is not None,

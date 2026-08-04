@@ -14,7 +14,6 @@ classifier = Classifier()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-
     logger.info(f"Loading {settings.MODEL_NAME} model...")
 
     classifier.load()
