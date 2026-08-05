@@ -6,7 +6,7 @@ from torchvision.models import ResNet18_Weights, resnet18
 
 from app.config import settings
 from app.logger import logger
-from app.models.response import Prediction, PredictionResponse
+from app.models.response import BatchPredictionResponse, Prediction, PredictionResponse
 
 
 class Classifier:
@@ -93,11 +93,44 @@ class Classifier:
 
         return result
 
+    def predict_many(
+        self,
+        images: list[Image.Image],
+    ):
+        start = time.perf_counter()
+
+        tensors = self.preprocess_many(images)
+
+        batch = torch.cat(
+            tensors,
+            dim=0,
+        )
+
+        output = self.inference(batch)
+
+        result = self.postprocess_many(output)
+
+        elapsed = (time.perf_counter() - start) * 1000
+
+        logger.info(
+            "Batch prediction (%d images) finished in %.2f ms",
+            len(images),
+            elapsed,
+        )
+
+        return result
+
     def preprocess(self, image: Image.Image):
         tensor = self.transform(image)
         tensor = tensor.unsqueeze(0)
         tensor = tensor.to(self.device)
         return tensor
+
+    def preprocess_many(self, images: list[Image.Image]):
+        tensors = []
+        for image in images:
+            tensors.append(self.preprocess(image))
+        return tensors
 
     def inference(self, tensor: torch.Tensor):
         with torch.inference_mode():
@@ -121,3 +154,36 @@ class Classifier:
             )
 
         return PredictionResponse(predictions=predictions)
+
+    def postprocess_many(
+        self,
+        output: torch.Tensor,
+    ):
+        probabilities = torch.softmax(
+            output,
+            dim=1,
+        )
+
+        values, indices = torch.topk(
+            probabilities,
+            k=settings.TOP_K,
+        )
+
+        results = []
+
+        for sample_values, sample_indices in zip(
+            values,
+            indices,
+            strict=False,
+        ):
+            predictions = []
+            for confidence, index in zip(sample_values, sample_indices, strict=False):
+                predictions.append(
+                    Prediction(
+                        class_name=self.categories[index.item()],
+                        confidence=round(confidence.item(), 4),
+                    )
+                )
+            results.append(PredictionResponse(predictions=predictions))
+
+        return BatchPredictionResponse(results=results)

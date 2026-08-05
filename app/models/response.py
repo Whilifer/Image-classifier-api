@@ -8,3 +8,7 @@ class Prediction(BaseModel):
 
 class PredictionResponse(BaseModel):
     predictions: list[Prediction]
+
+
+class BatchPredictionResponse(BaseModel):
+    results: list[PredictionResponse]
