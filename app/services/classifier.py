@@ -11,14 +11,9 @@ from app.models.response import BatchPredictionResponse, Prediction, PredictionR
 
 class Classifier:
     def __init__(self):
-        # self.mlflow = None #не используется
-
         self.model = None
         self.transform = None
         self.categories = None
-
-    # def set_mlflow(self, mlflow): #не используется
-    #     self.mlflow = mlflow
 
     def load(self):
         weights = ResNet18_Weights.DEFAULT
@@ -37,38 +32,6 @@ class Classifier:
 
         self.categories = weights.meta["categories"]
 
-    # def predict(
-    #     self,
-    #     image: Image.Image
-    # ):
-
-    #     tensor = self.transform(image)
-
-    #     tensor = tensor.unsqueeze(0)
-
-    #     with torch.no_grad():
-
-    #         output = self.model(tensor)
-
-    #         probabilities = torch.softmax(
-    #             output,
-    #             dim=1
-    #         )
-
-    #     index = probabilities.argmax(
-    #         dim=1
-    #     ).item()
-
-    #     confidence = probabilities[
-    #         0,
-    #         index
-    #     ].item()
-
-    #     return {
-    #         "class": self.categories[index],
-    #         "confidence": confidence
-    #     }
-
     def predict(self, image: Image.Image):
         start = time.perf_counter()
 
@@ -79,15 +42,6 @@ class Classifier:
         result = self.postprocess(output)
 
         elapsed = (time.perf_counter() - start) * 1000
-
-        # не используется
-        # self.mlflow.log_prediction(
-        #     model_name="ResNet18",
-        #     device=self.device,
-        #     confidence=confidence,
-        #     inference_time_ms=elapsed,
-        #     predicted_class=predicted_class
-        # )
 
         logger.info("Prediction finished in %.2f ms", elapsed)
 

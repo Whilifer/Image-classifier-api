@@ -9,6 +9,8 @@ class Settings(BaseSettings):
 
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024
 
+    MAX_BATCH_SIZE: int = 16
+
     DEVICE: str = "cuda" if torch.cuda.is_available() else "cpu"
 
     # class Config:
